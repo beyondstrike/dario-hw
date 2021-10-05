@@ -8,6 +8,7 @@ Class Message_log{
     public $usr_id;
     private $conn;
 
+    //init values
     public function __construct($date_from,$date_to,$cnt_id='',$usr_id='')
     {
         //Checking validation of Date string
@@ -74,12 +75,14 @@ Class Message_log{
 
         }else{ //no filters
             
-            $sql = "SELECT * FROM send_log WHERE log_created BETWEEN ? AND ?";
+            $sql = "SELECT * FROM send_log WHERE log_created BETWEEN ++? AND ?";
 
             mysqli_stmt_prepare($stmt,$sql);
             mysqli_stmt_bind_param($stmt,"ss",$this->date_from ,$this->date_to);
             
         }
+
+        //query execute
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $data = mysqli_fetch_all($result,MYSQLI_ASSOC);
@@ -101,10 +104,12 @@ Class Message_log{
         return $final_result;
     }
 
+    //get from-to dates
     public function get_dates(){
         return ['from'=>$this->date_from,'to'=>$this->date_to];
     }
 
+    //fetching user data
     public function get_user(){
         $sql = "SELECT usr_name FROM users WHERE usr_id = ?";
         
@@ -118,6 +123,7 @@ Class Message_log{
         
     }
 
+    //fetching country data
     public function get_country(){
         $sql = "SELECT cnt_title FROM countries WHERE cnt_id = ?";
         
